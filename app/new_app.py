@@ -303,7 +303,7 @@ if uploaded_file is not None:
                 try:
 
                     backend_url = (
-                        "http://127.0.0.1:8000/analyze"
+                        "https://aimediaoptimizer-production.up.railway.app/analyze"
                     )
 
                     payload = {
