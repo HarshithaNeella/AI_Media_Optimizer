@@ -1,0 +1,481 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "run-analysis",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        -608
+      ],
+      "id": "1bb3b1f7-78b7-45c6-9676-79d26f701051",
+      "name": "Webhook",
+      "webhookId": "4ffaf044-425d-4acf-bfbb-4ae84b1a41f0"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1360,
+        -528
+      ],
+      "id": "c3940d25-49b4-46ee-9b03-2774ab1506bf",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        -400
+      ],
+      "id": "2154ca04-dd5a-4292-8550-b621e45419e3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "716fkrOhN5lxwp9e",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -400
+      ],
+      "id": "03eeac0f-8e49-4243-ad4a-0bb55117f8a4",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "CWslelu2mRJVSSpj",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an Enterprise AI Advertising Optimization Agent.\n\nAnalyze the campaign data and return ONLY valid JSON.\n\nCampaign Summary Metrics:\n{{ $('Webhook').item.json.body.summary_metrics}}\n\nCampaign Data:\n{{ $('Webhook').item.json.body.campaign_data }}\n\nPlanner Insights:\n{{ $('Planeer Agent').item.json.output }}\n\nCritic Feedback:\n{{ $json.critic_feedback || 'None' }}\n\nRetry Count:\n{{ $json.retry_count || 0 }}\n\nRULES:\n- Output valid JSON only\n- No markdown\n- No explanation\n- No code block\n- No extra text\n\nJSON FORMAT:\n\n{\n  \"campaign_summary\": {\n    \"overall_status\": \"\",\n    \"primary_issue\": \"\",\n    \"optimization_priority\": \"\"\n  },\n  \"issues_detected\": [\n    {\n      \"issue\": \"\",\n      \"severity\": \"\",\n      \"affected_metric\": \"\",\n      \"root_cause\": \"\"\n    }\n  ],\n  \"optimization_suggestions\": [\n    {\n      \"title\": \"\",\n      \"recommendation\": \"\",\n      \"expected_impact\": \"\",\n      \"priority\": \"\",\n      \"implementation_time\": \"\",\n      \"business_value\": \"\"\n    }\n  ],\n  \"action_plan\": {\n    \"immediate_actions\": [],\n    \"mid_term_actions\": [],\n    \"long_term_actions\": []\n  },\n  \"executive_summary\": \"\",\n  \"retry_iteration\": 0\n}",
+        "needsFallback": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        304,
+        -608
+      ],
+      "id": "2f6e20cf-7352-45ec-ad58-b207af632bf6",
+      "name": "Analyzer Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a Senior AI Quality Review Agent.\n\nEvaluate the campaign optimization response.\n\nCheck:\n1. Business relevance\n2. Recommendation clarity\n3. Specificity\n4. Measurable impact\n5. Strategic value\n6. Executive-readiness\n\nSCORING:\n1-4 = Weak\n5-7 = Average\n8-10 = Production Ready\n\nReturn STRICTLY this format only:\n\nScore: X\nVerdict: PASS or FAIL\n\nWeaknesses:\n- weakness\n- weakness\n\nImprovement Instructions:\n- instruction\n- instruction",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        624,
+        -608
+      ],
+      "id": "093444df-1be9-4cc1-a3a3-a02b20dec2a2",
+      "name": "Critic Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -448
+      ],
+      "id": "f55d752b-6595-429d-842d-fc6815efa8ca",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "prh0ZgjQo0XBFwan",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        624,
+        -416
+      ],
+      "id": "0440f26d-a09a-4be7-8010-e76266495276",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "prh0ZgjQo0XBFwan",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fb978edc-20b8-4f85-9462-49cf960809dd",
+              "name": "score",
+              "value": "={{ Number(($json.output.match(/Score:\\s*(\\d+)/) || [0,0])[1]) }}",
+              "type": "number"
+            },
+            {
+              "id": "41cfcdb7-671e-4b63-ba00-fc75f49ac954",
+              "name": "verdict",
+              "value": "={{ ($json.output.match(/Verdict:\\s*(PASS|FAIL)/) || [0,'FAIL'])[1] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        928,
+        -608
+      ],
+      "id": "acef096b-96ae-4220-8c37-00e19adf1a01",
+      "name": "Extract Score"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "54670ab2-df0d-4943-a4cf-c5921b919403",
+              "leftValue": "={{ $json.score }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        976,
+        -352
+      ],
+      "id": "bdcdccdc-fc58-4a2c-b978-39a5f77d5368",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "63864834-4934-4d2a-ae6d-095132e675d4",
+              "name": "critic_feedback",
+              "value": "={{ $('Critic Agent').item.json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "a99c2da9-73f7-4358-9464-f37df09ec034",
+              "name": "retry_count",
+              "value": "={{ ($json.retry_count || 0) + 1 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1168,
+        -192
+      ],
+      "id": "e48e35aa-2a8f-47f8-9493-3db103e82aeb",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        592,
+        -208
+      ],
+      "id": "efb3a8a1-065b-4be9-821f-fb4b40ca9dc6",
+      "name": "Wait",
+      "webhookId": "57fc0ad0-ebce-40d4-a4fa-79a3a9b46d29"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1002d23-bc03-4db4-94e4-ac0f9ef3d342",
+              "name": "success",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "bc0eb4be-eb19-4b0d-9b07-d82a81775838",
+              "name": "status",
+              "value": "={{ \"completed\" }}",
+              "type": "string"
+            },
+            {
+              "id": "073cec81-5aae-4ac8-a345-cd4a77e2978e",
+              "name": "quality_score",
+              "value": "={{ $json.score }}",
+              "type": "number"
+            },
+            {
+              "id": "34ce74ed-8654-4f3a-886b-3c5f517e4751",
+              "name": "critic_verdict",
+              "value": "={{ $json.verdict }}",
+              "type": "string"
+            },
+            {
+              "id": "69b2c4a0-b0ac-45dd-a058-d4958dcc21ce",
+              "name": "analysis",
+              "value": "={{ JSON.parse($('Analyzer Agent').item.json.output.trim()) }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1168,
+        -544
+      ],
+      "id": "c38a5d7c-aa9b-454f-821c-dc91be76542f",
+      "name": "Final Response Formatter"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a Senior AI Campaign Planning Agent.\n\nAdvertising Campaign Data:\n{{ $('Webhook').item.json.body }}\n\nYour job:\n1. Identify major campaign performance issues\n2. Detect optimization opportunities\n3. Decide which business metrics need improvement\n4. Prioritize high-impact optimization areas\n\nFocus on:\n- CTR\n- CPC\n- Conversion Rate\n- ROAS\n- Spend efficiency\n- Audience targeting\n- Creative fatigue\n- Budget allocation\n\nReturn ONLY concise planning insights.\n\nKeep output under 150 words.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -48,
+        -608
+      ],
+      "id": "d667a9c3-7ebe-4c03-bd5e-1797226eafc1",
+      "name": "Planner Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyzer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyzer Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Analyzer Agent": {
+      "main": [
+        [
+          {
+            "node": "Critic Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Critic Agent": {
+      "main": [
+        [
+          {
+            "node": "Extract Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Planner Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Critic Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Score": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Final Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Analyzer Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Final Response Formatter": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Planner Agent": {
+      "main": [
+        [
+          {
+            "node": "Analyzer Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3ca9e77c-9d76-4948-ad8b-7b8318cb5284",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "570222b0a0cd6886d58796de5d0efe196f787d548665c56599c3dcb6beb9a98e"
+  },
+  "id": "yHZ6AC2WeVPZ2CsK",
+  "tags": []
+}

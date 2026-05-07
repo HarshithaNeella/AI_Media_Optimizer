@@ -1,0 +1,6 @@
+date,platform,ad_unit_id,ad_type,impressions,clicks,revenue,placement,device
+2026-05-01,web,AD101,banner,10000,120,15,header,desktop
+2026-05-01,mobile,AD102,video,8000,200,25,sidebar,mobile
+2026-05-02,web,AD103,banner,9000,90,12,footer,desktop
+2026-05-02,mobile,AD104,native,7000,140,18,header,mobile
+2026-05-03,web,AD105,video,11000,220,30,sidebar,desktop
