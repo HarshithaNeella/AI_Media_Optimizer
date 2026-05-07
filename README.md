@@ -3,8 +3,8 @@ title: AI Add Analyzer
 emoji: 📈
 colorFrom: red
 colorTo: blue
-sdk: gradio
-sdk_version: 6.14.0
+sdk: streamlit
+sdk_version: 1.45.0
 python_version: '3.13'
 app_file: app.py
 pinned: false
